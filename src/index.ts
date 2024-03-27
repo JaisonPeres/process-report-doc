@@ -1,4 +1,4 @@
-import path from 'path';
+import path, { parse } from 'path';
 import * as xlsx from 'xlsx';
 
 const INPUT_FILE = 'file.xlsx';
@@ -52,10 +52,22 @@ const getNameAndValueFromArray = (arr: string[][]) => {
   return result;
 }
 
+const extractOnlyNameFromText = (text: string) => {
+  let name = '';
+  const regexNumber = /\d/;
+  for (let i = 0; i < text.length; i++) {
+    if (regexNumber.test(text[i])){
+      name = text.slice(0, i);
+      break;
+    }
+  }
+  return name.trim();
+}
+
 const clearNameAndValue = (arr: InterestData[]) => {
   const result = [];
   for (let i = 0; i < arr.length; i++) {
-    const name = arr[i].name.split('0')[0].trim();
+    const name = extractOnlyNameFromText(arr[i].name)
     const valueArr = arr[i].value.split(' ');
     const value = valueArr[valueArr.length - 1];
     result.push({ name, value });
